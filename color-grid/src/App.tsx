@@ -4,52 +4,56 @@ import './App.css'
 function App() {
 
   const [result, setResult] = useState<Array<number[]> | undefined>(undefined)
+  const [report, setReport] = useState<number[] | undefined>(undefined)
+  const [imageWidth, setImageWidth] = useState<number>(0)
+  const [imageHeight, setImageHeight] = useState<number>(0)
 
   const BRICK_COLORS = [
-    {name:'Black', color: [0,0,0], available:true, price:0.01},
-    {name:'Blue', color: [0, 87, 166], available:true, price:0.01},
-    {name:'Bright Green', color: [16, 203, 49], available:true, price:0.01},
-    {name:'Bright Light Orange', color: [255, 199, 0], available:true, price:0.01},
-    {name:'Bright Light Yellow', color: [254, 237, 131], available:true, price:0.01},
-    {name:'Bright Pink', color: [247, 188, 248], available:true, price:0.01},
-    {name:'Brown', color: [83, 33, 21], available:true, price:0.01},
-    {name:'Coral', color: [255, 129, 114], available:true, price:0.01},
-    {name:'Dark Azure', color: [0, 159, 224], available:true, price:0.01},
-    {name:'Dark Blue', color: [36, 55, 87], available:true, price:0.01},
-    {name:'Dark Bluish Gray', color: [89, 93, 96], available:true, price:0.01},
-    {name:'Dark Brown', color: [51, 0, 0], available:true, price:0.01},
-    {name:'Dark Gray', color: [107, 90, 90], available:true, price:0.01},
-    {name:'Dark Green', color: [46, 85, 67], available:true, price:0.01},
-    {name:'Dark Orange', color: [180, 84, 8], available:true, price:0.01},
-    {name:'Dark Pink', color: [239, 91, 179], available:true, price:0.01},
-    {name:'Dark Purple', color: [95, 38, 131], available:true, price:0.01},
-    {name:'Dark Red', color: [106, 14, 21], available:true, price:0.01},
-    {name:'Dark Tan', color: [144, 116, 80], available:true, price:0.01},
-    {name:'Dark Turquoise', color: [0, 162, 160], available:true, price:0.01},
-    {name:'Green', color: [0, 146, 61], available:true, price:0.01},
-    {name:'Lavender', color: [211, 189, 227], available:true, price:0.01},
-    {name:'Light Aqua', color: [216, 239, 221], available:true, price:0.01},
-    {name:'Light Bluish Gray', color: [175, 181, 200], available:true, price:0.01},
-    {name:'Light Gray', color: [156, 156, 156], available:true, price:0.01},
-    {name:'Lime', color: [196, 224, 1], available:true, price:0.01},
-    {name:'Maersk Blue', color: [125, 193, 216], available:true, price:0.01},
-    {name:'Magenta', color: [183, 34, 118], available:true, price:0.01},
-    {name:'Medium Azure', color: [107, 206, 224], available:true, price:0.01},
-    {name:'Medium Blue', color: [130, 173, 216], available:true, price:0.01},
-    {name:'Medium Lavender', color: [198, 137, 217], available:true, price:0.01},
-    {name:'Medium Nougat', color: [227, 160, 91], available:true, price:0.01},
-    {name:'Orange', color: [255, 126, 21], available:true, price:0.01},
-    {name:'Pink', color: [255, 193, 203], available:true, price:0.01},
-    {name:'Purple', color: [165, 73, 156], available:true, price:0.01},
-    {name:'Red', color: [179, 0, 5], available:true, price:0.01},
-    {name:'Reddish Brown', color: [137, 53, 30], available:true, price:0.01},
-    {name:'Sand Blue', color: [136, 153, 171], available:true, price:0.01},
-    {name:'Sand Green', color: [162, 191, 163], available:true, price:0.01},
-    {name:'Tan', color: [222, 198, 156], available:true, price:0.01},
-    {name:'White', color: [255, 255, 255], available:true, price:0.01},
-    {name:'Yellow', color: [255, 224, 0], available:true, price:0.01},
-    {name:'Yellowish Green', color: [231, 242, 167], available:true, price:0.01}
+    {name:'Black', color: [0,0,0], available:true, price:0.05},
+    {name:'Blue', color: [0, 87, 166], available:true, price:0.05},
+    {name:'Bright Green', color: [16, 203, 49], available:true, price:0.06},
+    {name:'Bright Light Orange', color: [255, 199, 0], available:true, price:0.06},
+    {name:'Bright Light Yellow', color: [254, 237, 131], available:true, price:0.05},
+    {name:'Bright Pink', color: [247, 188, 248], available:true, price:0.07},
+    {name:'Brown', color: [83, 33, 21], available:true, price:0.39},
+    {name:'Coral', color: [255, 129, 114], available:true, price:0.03},
+    {name:'Dark Azure', color: [0, 159, 224], available:true, price:0.09},
+    {name:'Dark Blue', color: [36, 55, 87], available:true, price:0.07},
+    {name:'Dark Bluish Gray', color: [89, 93, 96], available:true, price:0.06},
+    // {name:'Dark Brown', color: [51, 0, 0], available:true, price:0.01},
+    {name:'Dark Gray', color: [107, 90, 90], available:true, price:0.20},
+    {name:'Dark Green', color: [46, 85, 67], available:true, price:0.05},
+    {name:'Dark Orange', color: [180, 84, 8], available:true, price:0.04},
+    {name:'Dark Pink', color: [239, 91, 179], available:true, price:0.10},
+    {name:'Dark Purple', color: [95, 38, 131], available:true, price:0.03},
+    {name:'Dark Red', color: [106, 14, 21], available:true, price:0.05},
+    {name:'Dark Tan', color: [144, 116, 80], available:true, price:0.05},
+    {name:'Dark Turquoise', color: [0, 162, 160], available:true, price:0.06},
+    {name:'Green', color: [0, 146, 61], available:true, price:0.05},
+    {name:'Lavender', color: [211, 189, 227], available:true, price:0.04},
+    {name:'Light Aqua', color: [216, 239, 221], available:true, price:0.05},
+    {name:'Light Bluish Gray', color: [175, 181, 200], available:true, price:0.04},
+    {name:'Light Gray', color: [156, 156, 156], available:true, price:0.36},
+    {name:'Lime', color: [196, 224, 1], available:true, price:0.04},
+    // {name:'Maersk Blue', color: [125, 193, 216], available:true, price:0.28},
+    {name:'Magenta', color: [183, 34, 118], available:true, price:0.05},
+    {name:'Medium Azure', color: [107, 206, 224], available:true, price:0.04},
+    {name:'Medium Blue', color: [130, 173, 216], available:true, price:0.05},
+    {name:'Medium Lavender', color: [198, 137, 217], available:true, price:0.07},
+    {name:'Medium Nougat', color: [227, 160, 91], available:true, price:0.05},
+    {name:'Orange', color: [255, 126, 21], available:true, price:0.08},
+    // {name:'Pink', color: [255, 193, 203], available:true, price:1.20},
+    // {name:'Purple', color: [165, 73, 156], available:true, price:0.89},
+    {name:'Red', color: [179, 0, 5], available:true, price:0.04},
+    {name:'Reddish Brown', color: [137, 53, 30], available:true, price:0.05},
+    {name:'Sand Blue', color: [136, 153, 171], available:true, price:0.04},
+    {name:'Sand Green', color: [162, 191, 163], available:true, price:0.05},
+    {name:'Tan', color: [222, 198, 156], available:true, price:0.04},
+    {name:'White', color: [255, 255, 255], available:true, price:0.05},
+    {name:'Yellow', color: [255, 224, 0], available:true, price:0.05},
+    {name:'Yellowish Green', color: [231, 242, 167], available:true, price:0.05}
   ]
+  const FRAME_PRICE = 3.53
 
   const isImage = (element:any) => {
     return element instanceof HTMLImageElement;
@@ -87,21 +91,33 @@ function App() {
     canvasContext.drawImage(element, 0, 0, element.width, element.height);
 
     const array2d = create2dArray(element.height, element.width)
+    const newReport:any = {}
 
     const array2dIndexes = array2d.map((c1, i1) => {
       return c1.map((c2, i2) => {
         var pixelData = canvasContext.getImageData(i2, i1, 1, 1);
         if (isSolidNode(pixelData, i1, i2)) {
           // return pixelData.data
-          return getClosestColorIndex(pixelData)
+          const closestIndex = getClosestColorIndex(pixelData)
+
+          if (newReport[closestIndex]) {
+            newReport[closestIndex]++
+          } else {
+            newReport[closestIndex] = 1
+          }
+
+          return closestIndex
         } else {
           return c2
         }
       })
     })
 
-    // console.log(array2dIndexes)
+    // console.log(newReport)
     setResult(array2dIndexes)
+    setReport(newReport)
+    setImageWidth(element.width)
+    setImageHeight(element.height)
   }
 
   const create2dArray = (height: number, width: number) => {
@@ -186,27 +202,84 @@ function App() {
     // const url = './example.png'
     // const url = './pikachu.png'
     // const url = './firstline.png'
-    const url = './charizard.png'
+    // const url = './charizard.png'
+    const url = './dragapult.png'
+    // const url = './shinydragapult.png'
     scan(url);
   }, []);
+
+  const itemTotal = report ? Object.keys(report).reduce((acc, key: any) => {
+    const count = report[key]
+    const brickObject= BRICK_COLORS[key]
+    return acc + (brickObject.price*count)
+  }, 0) : 0
+
+  const numberOfFrames = Math.round(imageWidth/16) * Math.round(imageHeight/16)
+
+  const reportTotal = itemTotal + (numberOfFrames*FRAME_PRICE)
 
   return (
     <>
       <canvas id='originalCanvas'></canvas>
-      <canvas id='secondCanvas'></canvas>
+      {/* <canvas id='secondCanvas'></canvas> */}
 
-      {result ? <div style={{ border: '1px solid grey', width: '60000px'}}>
+      <div style={{ clear:'both'}}></div>
+
+      {result ? <div style={{ border: '1px solid grey', float: 'left'}}>
         {result.map((r1, k1) => {
           return <div key={k1} style={{ display: 'flex'}}>
             {r1.map((r2, k2) => {
               return <div key={k2} style={{
                 width:'4px',
                 height:'4px',
+                // borderRadius: '100px',
                 backgroundColor: r2 === undefined ? 'white': getColorFromIndex(r2)
               }}></div>
             })}
           </div>
         })}</div> : undefined}
+
+      <div style={{ clear:'both'}}></div>
+      <br/>
+
+      {report &&
+        <>
+          <div>Report: {imageWidth}x{imageHeight}</div>
+          <table>
+            <tbody>
+            {Object.keys(report).map((key: any, index) => {
+              const count = report[key]
+              const brickObject= BRICK_COLORS[key]
+              return <tr key={index}>
+                <td style={{
+                  width:'20px',
+                  height:'20px',
+                  border: '1px solid grey',
+                  backgroundColor: getColorFromIndex(key)
+                }}></td>
+                <td>{brickObject.name}</td>
+                <td>{count}</td>
+                <td>€{(brickObject.price*count).toFixed(2)}</td>
+
+              </tr>
+            })}
+            <tr>
+              <td></td>
+              <td>Frame</td>
+              <td>{numberOfFrames}</td>
+              <td>€{(numberOfFrames*FRAME_PRICE).toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Total: €{reportTotal.toFixed(2)}</td>
+            </tr>
+            </tbody>
+          </table>
+
+        </>
+      }
 
       <br/>
       <br/>
