@@ -4,10 +4,9 @@ import './App.css'
 function App() {
 
   const [result, setResult] = useState<Array<number[]> | undefined>(undefined)
-  const [copy, setCopy] = useState<Array<Array<number[]>> | undefined>(undefined)
 
   const BRICK_COLORS = [
-    {name:'Black', color: [33,33,33], available:true, price:0.01},
+    {name:'Black', color: [0,0,0], available:true, price:0.01},
     {name:'Blue', color: [0, 87, 166], available:true, price:0.01},
     {name:'Bright Green', color: [16, 203, 49], available:true, price:0.01},
     {name:'Bright Light Orange', color: [255, 199, 0], available:true, price:0.01},
@@ -73,73 +72,63 @@ function App() {
 
   const createFirstCanvas = (element:any) => {
     var canvas:any = document.getElementById("originalCanvas");
-    const factor = 10
+    const factor = 4
     canvas.width = element.width*factor;
     canvas.height = element.height*factor;
     canvas.getContext("2d").drawImage(element, 0, 0, element.width*factor, element.height*factor);
   }
 
   const createSecondImage = (element:any) => {
-    var canvas:any = document.getElementById("secondCanvas");
-    // var canvas: any = document.createElement("canvas");
+    // var canvas:any = document.getElementById("secondCanvas");
+    var canvas: any = document.createElement("canvas");
     canvas.width = element.width;
     canvas.height = element.height;
     var canvasContext = canvas.getContext("2d")
     canvasContext.drawImage(element, 0, 0, element.width, element.height);
 
-    // const array2d = create2dArray(element.height, element.width)
-    const copy2d = create2dArray(element.height, element.width)
+    const array2d = create2dArray(element.height, element.width)
 
-    // console.log(element.width)
-    // console.log(element.height)
-
-    for (var i = 0; i < element.height ; i++) {
-    for (var j = 0; j < element.width; j++) {
-      console.log('indexes', i, j)
-        var pixelData = canvasContext.getImageData(i, j, 1, 1);
-        if (isSolidNode(pixelData, i, j)) {
-          // array2d[i][j] = getClosestColorIndex(pixelData)
-          // console.log(copy2d)
-          copy2d[i][j] = pixelData.data
-
-          // console.log('index', getClosestColorIndex(pixelData))
-
-          // const newPixelData = getClosestColorIndex(pixelData)
-          // canvasContext.putImageData(pixelData.data, i, j);
+    const array2dIndexes = array2d.map((c1, i1) => {
+      return c1.map((c2, i2) => {
+        var pixelData = canvasContext.getImageData(i2, i1, 1, 1);
+        if (isSolidNode(pixelData, i1, i2)) {
+          // return pixelData.data
+          return getClosestColorIndex(pixelData)
+        } else {
+          return c2
         }
-      }
-    }
+      })
+    })
 
-    // console.log('array2d', array2d)
-    // setResult(array2d)
-    console.log(copy2d)
-    setCopy(copy2d)
+    // console.log(array2dIndexes)
+    setResult(array2dIndexes)
   }
 
   const create2dArray = (height: number, width: number) => {
-    const array1d = new Array(width).fill(undefined)
-    const array2d = new Array(height).fill(array1d)
+    const array2d = new Array(height).fill(undefined).map(() => {
+      return new Array(width).fill(undefined)
+    })
     return array2d
   }
 
   const getClosestColorIndex = (pixelData: any) => {
+    const r1 = pixelData.data[0]
+    const g1 = pixelData.data[1]
+    const b1 = pixelData.data[2]
+    const average = (r1 + g1 + b1) / 3
+
     const diffArray = BRICK_COLORS.map(c => {
-      const diffR = getAbsoluteDiff(c.color[0], pixelData.data[0])
-      const diffG = getAbsoluteDiff(c.color[0], pixelData.data[0])
-      const diffB = getAbsoluteDiff(c.color[0], pixelData.data[0])
-      return diffR + diffG + diffB
+      const r2 = c.color[0]
+      const g2 = c.color[1]
+      const b2 = c.color[2]
+
+      const diff = Math.sqrt(Math.pow((r2-r1), 2) + Math.pow((g2-g1), 2) + Math.pow((b2-b1), 2))
+      return diff
     })
     // console.log('diffArray', diffArray)
     // console.log('smallestIndex', getSmallestIndex(diffArray))
 
     return getSmallestIndex(diffArray)
-    // const diffR = 0
-    // const diffR = 0
-    // const diffR = 0
-    // pixelData.data[0] = 100
-    // pixelData.data[1] = 100
-    // pixelData.data[2] = 100
-    // return pixelData
   }
 
   const getSmallestIndex = (array: number[]) => {
@@ -194,8 +183,10 @@ function App() {
 
 
   useEffect(() => {
-    const url = './example.png'
+    // const url = './example.png'
     // const url = './pikachu.png'
+    // const url = './firstline.png'
+    const url = './charizard.png'
     scan(url);
   }, []);
 
@@ -204,31 +195,18 @@ function App() {
       <canvas id='originalCanvas'></canvas>
       <canvas id='secondCanvas'></canvas>
 
-      {/* {result && <div style={{ border: '1px solid grey'}}>
+      {result ? <div style={{ border: '1px solid grey', width: '60000px'}}>
         {result.map((r1, k1) => {
           return <div key={k1} style={{ display: 'flex'}}>
             {r1.map((r2, k2) => {
               return <div key={k2} style={{
-                width:'5px',
-                height:'5px',
-                backgroundColor: r2 === undefined ? 'red': getColorFromIndex(r2)
+                width:'4px',
+                height:'4px',
+                backgroundColor: r2 === undefined ? 'white': getColorFromIndex(r2)
               }}></div>
             })}
           </div>
-        })}</div>} */}
-
-      {copy && <div style={{ border: '1px solid grey'}}>
-        {copy.map((r1, k1) => {
-          return <div key={k1} style={{ display: 'flex'}}>
-            {r1.map((r2, k2) => {
-              return <div key={k2} style={{
-                width:'80px',
-                height:'80px',
-                backgroundColor: r2 === undefined ? 'red': getColorFromArray(r2)
-              }}>{r2}</div>
-            })}
-          </div>
-        })}</div>}
+        })}</div> : undefined}
 
       <br/>
       <br/>
